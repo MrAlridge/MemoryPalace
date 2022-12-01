@@ -24,7 +24,7 @@
 
   
 
-  <title>回忆宫殿成功重启！！ | 回忆宫殿</title>
+  <title>【蓝桥杯】购物单问题 | 回忆宫殿</title>
 
   
 
@@ -100,18 +100,20 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">回忆宫殿成功重启！！</h1>
+          <h1 class="title-wrap">【蓝桥杯】购物单问题</h1>
           <h2 class="title-sub-wrap">
             <strong>FloatingHeart</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-11-30T10:50:00.000Z" itemprop="datePublished">2022-11-30</time>
+            <time  class="article-date" datetime="2022-12-01T07:00:00.000Z" itemprop="datePublished">2022-12-01</time>
           </h2>
           <ul class="wrap-list dark">
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/misc/">🏷️ misc</a></li>
+    <li><a href="/tags/c/">🏷️ c++</a></li>
+  
+    <li><a href="/tags/tips/">🏷️ tips</a></li>
   
 </ul>
         </div>
@@ -135,14 +137,34 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>经过两天的不懈努力以及对云服务器的疯狂折腾，目前网站终于正常上线了.</p>
-<p>特此发一条庆祝一下</p>
+        <h3 id="题目如下"><a href="#题目如下" class="headerlink" title="题目如下"></a>题目如下</h3><blockquote>
+<p>小明刚刚找到工作，老板人很好，只是老板夫人很爱购物。老板忙的时候经常让小明帮忙到商场代为购物。小明很厌烦，但又不好推辞。<br>这不，大促销又来了！老板夫人开出了长长的购物单，都是有打折优惠的。<br>小明也有个怪癖，不到万不得已，从不刷卡，直接现金搞定。<br>现在小明很心烦，请你帮他计算一下，需要从取款机上取多少现金，才能搞定这次购物。<br>取款机只能提供 100100 元面额的纸币。小明想尽可能少取些现金，够用就行了。 你的任务是计算出，小明最少需要取多少现金。<br>以下是让人头疼的购物单，为了保护隐私，物品名称被隐藏了。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">****     180.90       88折</span><br><span class="line">****      10.25       65折</span><br><span class="line">****      56.14        9折</span><br><span class="line">****     104.65        9折</span><br><span class="line">****     100.30       88折</span><br><span class="line">****     297.15        半价</span><br><span class="line">****      26.75       65折</span><br><span class="line">****     130.62        半价</span><br><span class="line">****     240.28       58折</span><br><span class="line">****     270.62        8折</span><br><span class="line">****     115.87       88折</span><br><span class="line">****     247.34       95折</span><br><span class="line">****      73.21        9折</span><br><span class="line">****     101.00        半价</span><br><span class="line">****      79.54        半价</span><br><span class="line">****     278.44        7折</span><br><span class="line">****     199.26        半价</span><br><span class="line">****      12.97        9折</span><br><span class="line">****     166.30       78折</span><br><span class="line">****     125.50       58折</span><br><span class="line">****      84.98        9折</span><br><span class="line">****     113.35       68折</span><br><span class="line">****     166.57        半价</span><br><span class="line">****      42.56        9折</span><br><span class="line">****      81.90       95折</span><br><span class="line">****     131.78        8折</span><br><span class="line">****     255.89       78折</span><br><span class="line">****     109.17        9折</span><br><span class="line">****     146.69       68折</span><br><span class="line">****     139.33       65折</span><br><span class="line">****     141.16       78折</span><br><span class="line">****     154.74        8折</span><br><span class="line">****      59.42        8折</span><br><span class="line">****      85.44       68折</span><br><span class="line">****     293.70       88折</span><br><span class="line">****     261.79       65折</span><br><span class="line">****      11.30       88折</span><br><span class="line">****     268.27       58折</span><br><span class="line">****     128.29       88折</span><br><span class="line">****     251.03        8折</span><br><span class="line">****     208.39       75折</span><br><span class="line">****     128.88       75折</span><br><span class="line">****      62.06        9折</span><br><span class="line">****     225.87       75折</span><br><span class="line">****      12.89       75折</span><br><span class="line">****      34.28       75折</span><br><span class="line">****      62.16       58折</span><br><span class="line">****     129.12        半价</span><br><span class="line">****     218.37        半价</span><br><span class="line">****     289.69        8折</span><br></pre></td></tr></table></figure>
+
+<h3 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h3><p>这道题仔细看会发现算法实现非常简单，但是难点在于怎样处理给出的数据。</p>
+<p>如果使用流一行一行的读取会非常麻烦，涉及到舍弃无关的<code>*</code>字符，并且在折扣一列中还要判断是否是“半价”这一词条。</p>
+<p>所以我决定直接用很多编辑器都支持的正则表达式将没有用的删掉，处理成如下所示</p>
+<blockquote>
+<p>其实这题用<code>查找替换</code>功能就可以了，没有很复杂的规律</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">180.90  88</span><br><span class="line">10.25  65</span><br><span class="line">56.14   90</span><br><span class="line">104.65   90</span><br><span class="line">100.30  88</span><br><span class="line">297.15   50</span><br><span class="line">26.75  65</span><br><span class="line">130.62   50</span><br><span class="line">240.28  58</span><br><span class="line">270.62   80</span><br><span class="line">115.87  88</span><br><span class="line">247.34  95</span><br><span class="line">73.21   90</span><br><span class="line">101.00   50</span><br><span class="line">79.54   50</span><br><span class="line">278.44   70</span><br><span class="line">199.26   50</span><br><span class="line">12.97   90</span><br><span class="line">166.30  78</span><br><span class="line">125.50  58</span><br><span class="line">84.98   90</span><br><span class="line">113.35  68</span><br><span class="line">166.57   50</span><br><span class="line">42.56   90</span><br><span class="line">81.90  95</span><br><span class="line">131.78   80</span><br><span class="line">255.89  78</span><br><span class="line">109.17   90</span><br><span class="line">146.69  68</span><br><span class="line">139.33  65</span><br><span class="line">141.16  78</span><br><span class="line">154.74   80</span><br><span class="line">59.42   80</span><br><span class="line">85.44  68</span><br><span class="line">293.70  88</span><br><span class="line">261.79  65</span><br><span class="line">11.30  88</span><br><span class="line">268.27  58</span><br><span class="line">128.29  88</span><br><span class="line">251.03   80</span><br><span class="line">208.39  75</span><br><span class="line">128.88  75</span><br><span class="line">62.06   90</span><br><span class="line">225.87  75</span><br><span class="line">12.89  75</span><br><span class="line">34.28  75</span><br><span class="line">62.16  58</span><br><span class="line">129.12   50</span><br><span class="line">218.37   50</span><br><span class="line">289.69   80</span><br></pre></td></tr></table></figure>
+
+<p>之后再丢进程序里面就变得好处理很多</p>
+<h3 id="提交代码"><a href="#提交代码" class="headerlink" title="提交代码"></a>提交代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 打开存储数据的文件</span></span><br><span class="line">    fstream f;</span><br><span class="line">    <span class="type">float</span> totalAddUp;</span><br><span class="line">    <span class="type">float</span> currentAdd;</span><br><span class="line">    <span class="type">float</span> currentDiscount;</span><br><span class="line">    <span class="type">int</span> inputDiscout;</span><br><span class="line">    totalAddUp = currentAdd = currentDiscount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    f.<span class="built_in">open</span>(<span class="string">&quot;./buyList.txt&quot;</span>, ios::in | ios::out);</span><br><span class="line">    <span class="comment">// 计算一共需要多少钱</span></span><br><span class="line">    <span class="keyword">while</span>(f &gt;&gt; currentAdd &gt;&gt; inputDiscout)</span><br><span class="line">    &#123;</span><br><span class="line">        currentDiscount = inputDiscout * <span class="number">0.01</span>;</span><br><span class="line">        totalAddUp += currentAdd * currentDiscount;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; totalAddUp / <span class="number">100.00</span> &lt;&lt; endl;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        此处运行结果是51.3686</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="用到的知识"><a href="#用到的知识" class="headerlink" title="用到的知识"></a>用到的知识</h3><ul>
+<li>文件流<code>fstream</code></li>
+<li>输入输出流<code>iostream</code>的特性（cin函数每次读取一行输入作为对象）</li>
+<li>正则表达式</li>
+</ul>
 
       </section>
 
       
       
         <nav class="article-nav">
+          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
@@ -153,11 +175,10 @@
           <h2 class="card-text--title text-ellipsis">【蓝桥杯】门牌制作问题</h2>
         </a>
       
-      <div class="card-text--row">Newer</div>
+      <div class="card-text--row">Older</div>
     </div>
   </article>
 </div>
-          
           
         </nav>
       
