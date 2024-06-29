@@ -6,7 +6,7 @@
   <link href="https://mralridge.github.io/atom.xml" rel="self"/>
   
   <link href="https://mralridge.github.io/"/>
-  <updated>2024-06-29T09:25:15.586Z</updated>
+  <updated>2024-06-29T10:03:27.012Z</updated>
   <id>https://mralridge.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>UML学习记录</title>
+    <link href="https://mralridge.github.io/2024/06/29/UML%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <id>https://mralridge.github.io/2024/06/29/UML%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</id>
+    <published>2024-06-29T09:39:27.000Z</published>
+    <updated>2024-06-29T10:03:27.012Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0-什么是UML"><a href="#0-什么是UML" class="headerlink" title="0&#x2F;什么是UML?"></a>0&#x2F;什么是UML?</h1><p>UML——Unified modeling language UML(统一建模语言)，是一种用于软件系统分析和设计的语言工具，它用于帮助软件开发人员进行思考和记录思路的结果.</p><p>UML本身是一套符号的规定，就像数学符号和化学符号一样，这些符号用于描述软件模型中的各个元素和他们之间的关系，比如类、接口、实现、泛化、依赖、组合、聚合等</p><h1 id="1-UML的分类"><a href="#1-UML的分类" class="headerlink" title="1&#x2F;UML的分类"></a>1&#x2F;UML的分类</h1><h2 id="1-1-UML图"><a href="#1-1-UML图" class="headerlink" title="1.1&#x2F;UML图"></a>1.1&#x2F;UML图</h2><p>UML图本质上是将你的想法转述给别人,所以主要分为以下几类:</p><ul><li>用例图</li><li>静态结构图:类图、对象图、包图、组件图、部署图</li><li>动态行为图:交互图（时序图与协作图）、状态图、活动图</li></ul><p>类图是用来描述类与类之间的关系的，所以是UML图中最核心的。</p><h2 id="1-2-UML类图"><a href="#1-2-UML类图" class="headerlink" title="1.2&#x2F;UML类图"></a>1.2&#x2F;UML类图</h2><p>类图用于描述系统中的类（对象）本身的<code>组成</code>和类（对象）之间的各种<code>静态关系</code>,类之间的关系有：</p><ul><li>依赖</li><li>泛化（继承）</li><li>实现</li><li>关联</li><li>聚合与组合</li></ul><p>所以类图可以用以下例子来解释</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>用类图就可以表示为</p><p><img src="https://s21.ax1x.com/2024/06/29/pkcpRW4.png" alt="用UML表示上面的代码"></p><h1 id="2-类图关系"><a href="#2-类图关系" class="headerlink" title="2&#x2F;类图关系"></a>2&#x2F;类图关系</h1><h2 id="2-0-类图关系概述"><a href="#2-0-类图关系概述" class="headerlink" title="2.0&#x2F;类图关系概述"></a>2.0&#x2F;类图关系概述</h2><blockquote><ul><li>设计一个类中的信息和行为要实现<code>高内聚</code></li><li>设计多个类，类之间要做到<code>低耦合</code></li></ul></blockquote><p>在实际的系统应用中，我们所<code>创建的多个对象往往是有联系</code>的, 通常情况下对象之间的关系可以分为以下几类：</p><ul><li>泛化关系</li><li>实现关系</li><li>依赖关系</li><li>关联关系</li><li>聚合关系</li><li>组合关系</li></ul><h2 id="2-1-泛化（继承）关系"><a href="#2-1-泛化（继承）关系" class="headerlink" title="2.1&#x2F;泛化（继承）关系"></a>2.1&#x2F;泛化（继承）关系</h2><p>简单的说，<code>泛化</code>就是<code>继承</code>,即一个类（我们称之为子类，子接口）继承(<code>extend</code>)另外一个类（我们称之为父类，父接口）的功能，并且可以增加自己<code>额外的</code>一些功能。</p><p>在UML关系中，继承通常使用<strong>空心三角+实线</strong>表示.</p><p>接口间的继承关系通常用圆心表示，而类之间的继承关系通常用矩形表示</p><p><img src="https://s21.ax1x.com/2024/06/29/pkc9ApQ.png" alt="UML表示类的继承"></p><h2 id="2-2-实现关系"><a href="#2-2-实现关系" class="headerlink" title="2.2&#x2F;实现关系"></a>2.2&#x2F;实现关系</h2>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;&#92;assets&#92;css&#92;APlayer.min.css&quot;&gt;&lt;script src=&quot;&#92;assets&#92;js&#92;APlayer.min.js&quot; cla</summary>
+      
+    
+    
+    
+    
+    <category term="UML" scheme="https://mralridge.github.io/tags/UML/"/>
+    
+    <category term="工作技能" scheme="https://mralridge.github.io/tags/%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD/"/>
+    
+    <category term="基本功" scheme="https://mralridge.github.io/tags/%E5%9F%BA%E6%9C%AC%E5%8A%9F/"/>
+    
+  </entry>
   
   <entry>
     <title>浅入浅出游戏引擎笔记（二）</title>
