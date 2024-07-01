@@ -1,0 +1,341 @@
+<!DOCTYPE html><html lang="zh_CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>在Lua中实现面向对象 | 回忆宫殿</title><meta name="author" content="F10atingHeart"><meta name="copyright" content="F10atingHeart"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="0&#x2F;前言可能这就是报应吧，刚开始工作的时候没好好学Lua，平常就是把它当成了python这样的其他脚本语言来用，一直没太仔细研究。到现在要做一些比较复杂的逻辑如果还是用之前那种面向过程的思想就会很受罪，所以这篇post来记录下Lua中如何实现面向对象 1&#x2F;面向对象的基础概念学过面向对象语言的肯定都很清楚，面向对象语言有以下几大概念：  对象(Object) 类(Class) 封">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Lua中实现面向对象">
+<meta property="og:url" content="https://mralridge.github.io/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/index.html">
+<meta property="og:site_name" content="回忆宫殿">
+<meta property="og:description" content="0&#x2F;前言可能这就是报应吧，刚开始工作的时候没好好学Lua，平常就是把它当成了python这样的其他脚本语言来用，一直没太仔细研究。到现在要做一些比较复杂的逻辑如果还是用之前那种面向过程的思想就会很受罪，所以这篇post来记录下Lua中如何实现面向对象 1&#x2F;面向对象的基础概念学过面向对象语言的肯定都很清楚，面向对象语言有以下几大概念：  对象(Object) 类(Class) 封">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg">
+<meta property="article:published_time" content="2024-07-01T07:56:41.000Z">
+<meta property="article:modified_time" content="2024-07-01T08:49:15.365Z">
+<meta property="article:author" content="F10atingHeart">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://mralridge.github.io/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: {"limitDay":500,"position":"top","messagePrev":"距本文发布已有","messageNext":"天,文章内容可能会出现过时的情况."},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: F10atingHeart","link":"Link: ","source":"Source: 回忆宫殿","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to Simplified Chinese","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: true,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '在Lua中实现面向对象',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-01 16:49:15'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"><link rel="alternate" href="/atom.xml" title="回忆宫殿" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s21.ax1x.com/2024/06/21/pkDN2ND.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-book"></i><span> Essay</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="回忆宫殿"><span class="site-name">回忆宫殿</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/bb/"><i class="fa-fw fas fa-book"></i><span> Essay</span></a></div></div></div><div id="nav-right"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="搜索本站文章"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">在Lua中实现面向对象</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-07-01T07:56:41.000Z" title="Created 2024-07-01 15:56:41">2024-07-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-07-01T08:49:15.365Z" title="Updated 2024-07-01 16:49:15">2024-07-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="在Lua中实现面向对象"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="0-前言"><a href="#0-前言" class="headerlink" title="0&#x2F;前言"></a>0&#x2F;前言</h1><p>可能这就是报应吧，刚开始工作的时候没好好学Lua，平常就是把它当成了python这样的其他脚本语言来用，一直没太仔细研究。到现在要做一些比较复杂的逻辑如果还是用之前那种面向过程的思想就会很受罪，所以这篇post来记录下Lua中如何实现面向对象</p>
+<h1 id="1-面向对象的基础概念"><a href="#1-面向对象的基础概念" class="headerlink" title="1&#x2F;面向对象的基础概念"></a>1&#x2F;面向对象的基础概念</h1><p>学过面向对象语言的肯定都很清楚，面向对象语言有以下几大概念：</p>
+<ul>
+<li>对象(Object)</li>
+<li>类(Class)</li>
+<li>封装(Encapsulation)</li>
+<li>继承(Inheritance)</li>
+<li>多态(Polymorphism)</li>
+</ul>
+<p>虽然lua本身没有这样的概念，但是好在它的特性比较好用且自由，我们就利用这些特性来实现</p>
+<h2 id="1-1-对象-Object"><a href="#1-1-对象-Object" class="headerlink" title="1.1&#x2F;对象(Object)"></a>1.1&#x2F;对象(Object)</h2><p>众所周知Lua的数据结构基本上就只有表(table)，在实际使用体验上来说，这是一把双刃剑</p>
+<p>坏处是涉及到一些比较复杂的数据结构，要手搓的东西就比较多</p>
+<p>好处是简单易用，基础的数据结构本质上都大差不差，直接拉一个<code>&#123;&#125;</code>出来就都能搞定。得益于表里面几乎什么东西都能放的特性，我们对表的扩展可做的事情就太多了</p>
+<p><code>对象</code>包含<code>属性</code>与<code>方法</code></p>
+<p>那么来到Lua，用表的话与之对应的就是<code>键值对</code>和<code>作为表的函数值</code></p>
+<div class="note info flat"><p>现在看来这个解释有点抽象，但是看完后面的说明与代码你就能明白了</p>
+</div>
+
+<h2 id="1-2-类-Class"><a href="#1-2-类-Class" class="headerlink" title="1.2&#x2F;类(Class)"></a>1.2&#x2F;类(Class)</h2><p>面向对象里面的<code>类</code>本质上其实就是一种抽象的<code>工厂模式</code>,不妨回忆一下，类的构造函数是不是就是工厂生产产品的过程呢？</p>
+<p>所以我们在Lua中实现类的方式就是写一个工厂函数，生产出符合类这一概念的表，再通过别的方式把这个表转化成实例</p>
+<h2 id="1-3-封装-Encapsulation"><a href="#1-3-封装-Encapsulation" class="headerlink" title="1.3&#x2F;封装(Encapsulation)"></a>1.3&#x2F;封装(Encapsulation)</h2><p>封装可以通过元表中的<code>__index</code>和<code>__newindex</code>元方法来实现。<code>__index</code>用于访问未找到的表成员时的回溯操作，可以用来控制对私有成员的访问；而<code>__newindex</code>可以在尝试修改未定义的表成员时触发，用来限制或记录对属性的修改。</p>
+<h2 id="1-4-继承-Inheritance"><a href="#1-4-继承-Inheritance" class="headerlink" title="1.4&#x2F;继承(Inheritance)"></a>1.4&#x2F;继承(Inheritance)</h2><p>继承可以通过让子类的元表的<code>__index</code>指向父类来实现。这样，当在子类实例中查找一个方法或属性未果时，会继续在父类中查找。仔细一想好像整个继承的概念就和<code>__index</code>做的事情很像.</p>
+<h2 id="1-5-多态-Polymorphism"><a href="#1-5-多态-Polymorphism" class="headerlink" title="1.5&#x2F;多态(Polymorphism)"></a>1.5&#x2F;多态(Polymorphism)</h2><p>多态主要通过方法重写来实现。子类可以定义与父类同名的方法，覆盖父类的行为。此外，Lua的动态特性自然支持鸭子类型，即只要对象提供了所需的方法，就可以被正确调用，无论对象属于哪个类。</p>
+<blockquote>
+<p>在程序设计中，鸭子类型（英语：duck typing）是动态类型的一种风格。在这种风格中，一个对象有效的语义，不是由继承自特定的类或实现特定的接口，而是由”当前方法和属性的集合”决定。这个概念的名字来源于由James Whitcomb Riley提出的鸭子测试，“鸭子测试”可以这样表述：</p>
+<p>“当看到一只鸟走起来像鸭子、游泳起来像鸭子、叫起来也像鸭子，那么这只鸟就可以被称为鸭子。”</p>
+<p>在鸭子类型中，关注点在于对象的行为，能作什么；而不是关注对象所属的类型。例如，在不使用鸭子类型的语言中，我们可以编写一个函数，它接受一个类型为”鸭子”的对象，并调用它的”走”和”叫”方法。在使用鸭子类型的语言中，这样的一个函数可以接受一个任意类型的对象，并调用它的”走”和”叫”方法。如果这些需要被调用的方法不存在，那么将引发一个运行时错误。任何拥有这样的正确的”走”和”叫”方法的对象都可被函数接受的这种行为引出了以上表述，这种决定类型的方式因此得名。</p>
+<p>(细心观察的话能发现Lua这门语言处处都是这种设计)</p>
+</blockquote>
+<h1 id="2-代码实现与讲解"><a href="#2-代码实现与讲解" class="headerlink" title="2&#x2F;代码实现与讲解"></a>2&#x2F;代码实现与讲解</h1><p>完整实现：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 基础的类定义函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Class</span><span class="params">(base)</span></span></span><br><span class="line">    <span class="keyword">local</span> class = base <span class="keyword">or</span> &#123;&#125;</span><br><span class="line">    class.new = <span class="function"><span class="keyword">function</span><span class="params">(...)</span></span></span><br><span class="line">        <span class="keyword">local</span> instance = <span class="built_in">setmetatable</span>(&#123;&#125;, &#123;<span class="built_in">__index</span> = class&#125;)</span><br><span class="line">        <span class="keyword">if</span> instance.init <span class="keyword">then</span> instance:init(...) <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> class</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 封装示例</span></span><br><span class="line"><span class="keyword">local</span> Person = Class()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person:init</span><span class="params">(name)</span></span></span><br><span class="line">    <span class="built_in">self</span>._name = name <span class="comment">-- 使用下划线前缀暗示这是一个私有成员</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person.getName</span><span class="params">(self)</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>._name</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">Person.<span class="built_in">__index</span> = Person <span class="comment">-- 限制直接访问私有成员</span></span><br><span class="line">Person.<span class="built_in">__newindex</span> = <span class="function"><span class="keyword">function</span><span class="params">(t, k, v)</span></span></span><br><span class="line">    <span class="built_in">error</span>(<span class="string">&quot;Cannot directly assign to private member&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 继承与多态示例</span></span><br><span class="line"><span class="keyword">local</span> Student = Class(Person)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:init</span><span class="params">(name, school)</span></span></span><br><span class="line">    Person.init(<span class="built_in">self</span>, name) <span class="comment">-- 调用父类构造函数</span></span><br><span class="line">    <span class="built_in">self</span>.school = school</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:introduce</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;I am &quot;</span> .. <span class="built_in">self</span>.getName(<span class="built_in">self</span>) .. <span class="string">&quot;, studying at &quot;</span> .. <span class="built_in">self</span>.school)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建对象并演示</span></span><br><span class="line"><span class="keyword">local</span> alice = Person.new(<span class="string">&quot;Alice&quot;</span>)</span><br><span class="line"><span class="comment">--alice._name = &quot;Bob&quot; -- 尝试修改私有成员会报错</span></span><br><span class="line"><span class="built_in">print</span>(alice.getName(alice)) <span class="comment">-- 正确访问私有成员</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> bob = Student.new(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;XYZ University&quot;</span>)</span><br><span class="line">bob:introduce() <span class="comment">-- 多态示例：Student类特有的introduce方法</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-1-创建类的工厂函数"><a href="#2-1-创建类的工厂函数" class="headerlink" title="2.1&#x2F;创建类的工厂函数"></a>2.1&#x2F;创建类的工厂函数</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 基础的类定义函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Class</span><span class="params">(base)</span></span></span><br><span class="line">    <span class="keyword">local</span> class = base <span class="keyword">or</span> &#123;&#125;</span><br><span class="line">    class.new = <span class="function"><span class="keyword">function</span><span class="params">(...)</span></span></span><br><span class="line">        <span class="keyword">local</span> instance = <span class="built_in">setmetatable</span>(&#123;&#125;, &#123;<span class="built_in">__index</span> = class&#125;)</span><br><span class="line">        <span class="keyword">if</span> instance.init <span class="keyword">then</span> instance:init(...) <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">return</span> class</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>这个函数在第一行是这样的</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> class = base <span class="keyword">or</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对<code>Class()</code>的输入参数做了一个限定,观察后面的代码可知这是为了区分基类与子类而这样处理的，也就是说，有参数就继承父类表，否则就是全新的空表.</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class.new = <span class="function"><span class="keyword">function</span><span class="params">(...)</span></span></span><br><span class="line">        <span class="keyword">local</span> instance = <span class="built_in">setmetatable</span>(&#123;&#125;, &#123;<span class="built_in">__index</span> = class&#125;)</span><br><span class="line">        <span class="keyword">if</span> instance.init <span class="keyword">then</span> instance:init(...) <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line">    <span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>创建一个新的空表<code>instance</code>作为对象实例，并为其设置一个元表（metatable）。元表中的<code>__index</code>元方法被设置为<code>class</code>，这意味着当在<code>instance</code>中找不到某个属性或方法时，Lua会去<code>class</code>表中查找。这种方式实现了方法和属性的继承，以及对实例访问未定义属性时的自动委托。</p>
+<p>之后检查<code>instance</code>表中是否存在一个名为<code>init</code>的初始化方法。如果存在，则调用它，并将接收到的所有参数（通过<code>...</code>）传递给<code>init</code>方法。这一步是实例化过程中初始化对象状态的地方。如果是父类的话，自然没有init方法，所以不会执行，返回空表。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> class</span><br></pre></td></tr></table></figure>
+
+<p>最后，Class函数返回class表，这个表现在包含了创建新对象的new方法，以及可能定义的其他类级别的属性和方法，形成了一个可以用来创建对象的“类”。</p>
+<h2 id="2-2-对类进行封装"><a href="#2-2-对类进行封装" class="headerlink" title="2.2&#x2F;对类进行封装"></a>2.2&#x2F;对类进行封装</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 封装示例</span></span><br><span class="line"><span class="keyword">local</span> Person = Class()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person:init</span><span class="params">(name)</span></span></span><br><span class="line">    <span class="built_in">self</span>._name = name <span class="comment">-- 使用下划线前缀暗示这是一个私有成员</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person.getName</span><span class="params">(self)</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>._name</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">Person.<span class="built_in">__index</span> = Person <span class="comment">-- 限制直接访问私有成员</span></span><br><span class="line">Person.<span class="built_in">__newindex</span> = <span class="function"><span class="keyword">function</span><span class="params">(t, k, v)</span></span></span><br><span class="line">    <span class="built_in">error</span>(<span class="string">&quot;Cannot directly assign to private member&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>这一部分就是具体对基类进行封装</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person:init</span><span class="params">(name)</span></span></span><br><span class="line">    <span class="built_in">self</span>._name = name <span class="comment">-- 使用下划线前缀暗示这是一个私有成员</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>这里实现的是构造函数，通过<code>self</code>来引用当前对象，<code>self._name</code>来引用当前对象的私有成员<code>_name</code>，<code>self</code>是Lua中的关键字，表示当前对象。定义了Person类的初始化方法<code>init</code>，它接收一个参数<code>name</code>，并将它存储为实例的私有属性<code>_name</code>。在Lua中，虽然没有严格的私有成员概念，但通过约定俗成，使用下划线前缀表示该成员应该是“私有的”，不应直接从外部访问或修改。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person.getName</span><span class="params">(self)</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">self</span>._name</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>提供一个公共方法<code>getName</code>，用于安全地获取私有属性<code>_name</code>的值。这样，外界可以通过这个方法访问私有成员的值，而不需要直接访问私有属性。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person.<span class="built_in">__index</span> = Person <span class="comment">-- 限制直接访问私有成员</span></span><br></pre></td></tr></table></figure>
+
+<p>这行代码设置<code>Person</code>类的元表的<code>__index</code>元方法为自身。这意味着当尝试访问<code>Person</code>实例中不存在的属性时，Lua会去<code>Person</code>类中查找。这本身不直接用于限制访问，但在结合<code>__newindex</code>使用时，有助于控制属性访问。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Person.<span class="built_in">__newindex</span> = <span class="function"><span class="keyword">function</span><span class="params">(t, k, v)</span></span></span><br><span class="line">    <span class="built_in">error</span>(<span class="string">&quot;Cannot directly assign to private member&quot;</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>设置<code>Person</code>类的元表的<code>__newindex</code>元方法。当尝试给<code>Person</code>的实例赋值一个不存在的键（这里通常是尝试修改私有成员）时，这个函数会被调用。在这个例子中，它抛出一个错误，阻止了对任何未明确定义的属性（特别是暗示为私有的属性）的直接赋值，从而实现了对私有成员的保护，强化了封装性。</p>
+<h2 id="2-3-继承与多态"><a href="#2-3-继承与多态" class="headerlink" title="2.3&#x2F;继承与多态"></a>2.3&#x2F;继承与多态</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 继承与多态示例</span></span><br><span class="line"><span class="keyword">local</span> Student = Class(Person)</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:init</span><span class="params">(name, school)</span></span></span><br><span class="line">    Person.init(<span class="built_in">self</span>, name) <span class="comment">-- 调用父类构造函数</span></span><br><span class="line">    <span class="built_in">self</span>.school = school</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:introduce</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;I am &quot;</span> .. <span class="built_in">self</span>.getName(<span class="built_in">self</span>) .. <span class="string">&quot;, studying at &quot;</span> .. <span class="built_in">self</span>.school)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>这段代码就是实际对<code>Person</code>类多态的实现</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> Student = Class(Person)</span><br></pre></td></tr></table></figure>
+
+<p>这里通过指定<code>Class()</code>参数为<code>Person</code>，创建了一个父类为<code>Person</code>的子类<code>Student</code>，也就是说<code>Student</code>表会继承<code>Person</code>表中的所有属性与方法</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:init</span><span class="params">(name, school)</span></span></span><br><span class="line">    Person.init(<span class="built_in">self</span>, name) <span class="comment">-- 调用父类构造函数</span></span><br><span class="line">    <span class="built_in">self</span>.school = school</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>Student</code>类中定义一个初始化方法<code>init</code>。这个方法首先通过<code>Person.init(self, name)</code>调用了父类的初始化方法，实现了父类属性（在这个案例中是<code>name</code>）的初始化。然后，它为<code>Student</code>类添加了一个新的属性<code>school</code>，并赋予传入的值。这是继承的一个典型应用，即子类可以在保留父类特性的同时，扩展自己的特性。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Student:introduce</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;I am &quot;</span> .. <span class="built_in">self</span>.getName(<span class="built_in">self</span>) .. <span class="string">&quot;, studying at &quot;</span> .. <span class="built_in">self</span>.school)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>定义了<code>Student</code>类的一个新方法<code>introduce</code>。这个方法打印出学生的名字（通过调用继承自<code>Person</code>类的<code>getName</code>方法得到）和学校名字。这里体现了多态性：尽管<code>getName</code>方法是从父类继承而来，<code>Student</code>类通过扩展自己的方法（<code>introduce</code>），以特定于子类的方式使用了这个继承的方法，展示了不同的行为。这说明即使使用了同样的方法名（如<code>getName</code>），在不同类的上下文中可以有不同的表现，符合面向对象编程中多态的概念。</p>
+<h2 id="2-4-实例化与使用"><a href="#2-4-实例化与使用" class="headerlink" title="2.4&#x2F;实例化与使用"></a>2.4&#x2F;实例化与使用</h2><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建对象并演示</span></span><br><span class="line"><span class="keyword">local</span> alice = Person.new(<span class="string">&quot;Alice&quot;</span>)</span><br><span class="line"><span class="comment">--alice._name = &quot;Bob&quot; -- 尝试修改私有成员会报错</span></span><br><span class="line"><span class="built_in">print</span>(alice.getName(alice)) <span class="comment">-- 正确访问私有成员</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">local</span> bob = Student.new(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;XYZ University&quot;</span>)</span><br><span class="line">bob:introduce() <span class="comment">-- 多态示例：Student类特有的introduce方法</span></span><br></pre></td></tr></table></figure>
+
+<p>这一段就是对我们刚才定义的<code>Person</code>与<code>Student</code>类的实际使用</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> alice = Person.new(<span class="string">&quot;Alice&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这行代码通过调用<code>Person</code>类的<code>new</code>方法创建了一个名为<code>alice</code>的<code>Person</code>对象，并将名字设为”Alice”。<code>alice</code>现在是一个包含了<code>_name属性</code>（尽管是私有的）和<code>getName</code>方法等的实例。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(alice.getName(alice)) <span class="comment">-- 正确访问私有成员</span></span><br></pre></td></tr></table></figure>
+
+<p>通过调用<code>alice</code>对象的<code>getName</code>方法来间接访问其私有属性<code>_name</code>，并打印出<code>&quot;Alice&quot;</code>。这种方法允许安全地访问和展示私有数据，而不违反封装原则。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">local</span> bob = Student.new(<span class="string">&quot;Bob&quot;</span>, <span class="string">&quot;XYZ University&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>创建了一个名为<code>bob</code>的<code>Student</code>对象，继承了<code>Person</code>类的属性和方法，并且具有额外的属性<code>school</code>，初始化为<code>&quot;XYZ University&quot;</code>。</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bob:introduce() <span class="comment">-- 多态示例：Student类特有的introduce方法</span></span><br></pre></td></tr></table></figure>
+
+<p>调用<code>bob</code>对象的<code>introduce</code>方法，这是<code>Student</code>类新增的方法，用于介绍学生自己。这个方法展示了多态性：虽然<code>getName</code>方法是继承自<code>Person</code>类的，但通过<code>Student</code>类的上下文（即<code>introduce</code>方法），它以一种特定于<code>Student</code>类的方式来使用，即不仅打印名字，还打印学校信息。这表明，尽管方法名相同，但通过不同类的不同实现，可以产生不同的行为，是面向对象多态性的直接体现。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://mralridge.github.io">F10atingHeart</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://mralridge.github.io/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">https://mralridge.github.io/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/07/01/%E6%9C%89%E5%85%B3%E6%B5%81%E7%A8%8B%E5%9B%BE/" title="有关流程图"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">有关流程图</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s21.ax1x.com/2024/06/21/pkDN2ND.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">F10atingHeart</div><div class="author-info__description">一个还在寻找自己的三流开发者</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/MrAlridge"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/MrAlridge" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:rnloser@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">暂时没有公告</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0-%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">0&#x2F;前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="toc-number">2.</span> <span class="toc-text">1&#x2F;面向对象的基础概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E5%AF%B9%E8%B1%A1-Object"><span class="toc-number">2.1.</span> <span class="toc-text">1.1&#x2F;对象(Object)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E7%B1%BB-Class"><span class="toc-number">2.2.</span> <span class="toc-text">1.2&#x2F;类(Class)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-%E5%B0%81%E8%A3%85-Encapsulation"><span class="toc-number">2.3.</span> <span class="toc-text">1.3&#x2F;封装(Encapsulation)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-%E7%BB%A7%E6%89%BF-Inheritance"><span class="toc-number">2.4.</span> <span class="toc-text">1.4&#x2F;继承(Inheritance)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-%E5%A4%9A%E6%80%81-Polymorphism"><span class="toc-number">2.5.</span> <span class="toc-text">1.5&#x2F;多态(Polymorphism)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E4%B8%8E%E8%AE%B2%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">2&#x2F;代码实现与讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-%E5%88%9B%E5%BB%BA%E7%B1%BB%E7%9A%84%E5%B7%A5%E5%8E%82%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">2.1&#x2F;创建类的工厂函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-%E5%AF%B9%E7%B1%BB%E8%BF%9B%E8%A1%8C%E5%B0%81%E8%A3%85"><span class="toc-number">3.2.</span> <span class="toc-text">2.2&#x2F;对类进行封装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-%E7%BB%A7%E6%89%BF%E4%B8%8E%E5%A4%9A%E6%80%81"><span class="toc-number">3.3.</span> <span class="toc-text">2.3&#x2F;继承与多态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-%E5%AE%9E%E4%BE%8B%E5%8C%96%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="toc-number">3.4.</span> <span class="toc-text">2.4&#x2F;实例化与使用</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" title="在Lua中实现面向对象"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="在Lua中实现面向对象"/></a><div class="content"><a class="title" href="/2024/07/01/%E5%9C%A8Lua%E4%B8%AD%E5%AE%9E%E7%8E%B0%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" title="在Lua中实现面向对象">在Lua中实现面向对象</a><time datetime="2024-07-01T07:56:41.000Z" title="Created 2024-07-01 15:56:41">2024-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/01/%E6%9C%89%E5%85%B3%E6%B5%81%E7%A8%8B%E5%9B%BE/" title="有关流程图"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="有关流程图"/></a><div class="content"><a class="title" href="/2024/07/01/%E6%9C%89%E5%85%B3%E6%B5%81%E7%A8%8B%E5%9B%BE/" title="有关流程图">有关流程图</a><time datetime="2024-07-01T03:08:18.000Z" title="Created 2024-07-01 11:08:18">2024-07-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/29/UML%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="UML学习记录"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="UML学习记录"/></a><div class="content"><a class="title" href="/2024/06/29/UML%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="UML学习记录">UML学习记录</a><time datetime="2024-06-29T09:39:27.000Z" title="Created 2024-06-29 17:39:27">2024-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/29/%E6%B5%85%E5%85%A5%E6%B5%85%E5%87%BA2/" title="浅入浅出游戏引擎笔记（二）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="浅入浅出游戏引擎笔记（二）"/></a><div class="content"><a class="title" href="/2024/06/29/%E6%B5%85%E5%85%A5%E6%B5%85%E5%87%BA2/" title="浅入浅出游戏引擎笔记（二）">浅入浅出游戏引擎笔记（二）</a><time datetime="2024-06-29T07:27:12.000Z" title="Created 2024-06-29 15:27:12">2024-06-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/28/%E7%BD%91%E6%B8%B8%E5%B8%B8%E8%A7%81%E6%A6%82%E7%8E%87%E6%8E%A7%E5%88%B6/" title="网游中常见的&quot;随机&quot;"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s21.ax1x.com/2024/06/28/pk6B1De.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="网游中常见的&quot;随机&quot;"/></a><div class="content"><a class="title" href="/2024/06/28/%E7%BD%91%E6%B8%B8%E5%B8%B8%E8%A7%81%E6%A6%82%E7%8E%87%E6%8E%A7%E5%88%B6/" title="网游中常见的&quot;随机&quot;">网游中常见的&quot;随机&quot;</a><time datetime="2024-06-28T08:59:09.000Z" title="Created 2024-06-28 16:59:09">2024-06-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 - 2024 By F10atingHeart</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.8/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  btf.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><script>(() => {
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://f10atingheart-hexocomments.hf.space',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://f10atingheart-hexocomments.hf.space',
+      region: '',
+      onCommentLoaded: () => {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(init,0)
+    else getScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.31/dist/twikoo.all.min.js').then(init)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !true) {
+    if (true) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script></div><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
