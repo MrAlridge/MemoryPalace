@@ -6,7 +6,7 @@
   <link href="https://mralridge.github.io/atom.xml" rel="self"/>
   
   <link href="https://mralridge.github.io/"/>
-  <updated>2024-07-16T08:05:29.350Z</updated>
+  <updated>2024-07-16T09:57:18.913Z</updated>
   <id>https://mralridge.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>最长公共前缀-每日1LeetCode</title>
+    <link href="https://mralridge.github.io/2024/07/16/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%89%8D%E7%BC%80-%E6%AF%8F%E6%97%A51LeetCode/"/>
+    <id>https://mralridge.github.io/2024/07/16/%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%89%8D%E7%BC%80-%E6%AF%8F%E6%97%A51LeetCode/</id>
+    <published>2024-07-16T09:54:26.000Z</published>
+    <updated>2024-07-16T09:57:18.913Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>编写一个函数来查找字符串数组中的最长公共前缀。</p><p>如果不存在公共前缀，返回空字符串 <code>&quot;&quot;</code>。</p><p>示例 1：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：strs = [&quot;flower&quot;,&quot;flow&quot;,&quot;flight&quot;]</span><br><span class="line">输出：&quot;fl&quot;</span><br></pre></td></tr></table></figure><p>示例 2：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：strs = [&quot;dog&quot;,&quot;racecar&quot;,&quot;car&quot;]</span><br><span class="line">输出：&quot;&quot;</span><br><span class="line">解释：输入不存在公共前缀。</span><br></pre></td></tr></table></figure><p>提示：</p><ul><li>1 &lt;&#x3D; strs.length &lt;&#x3D; 200</li><li>0 &lt;&#x3D; strs[i].length &lt;&#x3D; 200</li><li>strs[i] 仅由小写英文字母组成</li></ul><h2 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">string <span class="title">longestCommonPrefix</span><span class="params">(vector&lt;string&gt;&amp; strs)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> start = <span class="number">0</span>;</span><br><span class="line">        string result = <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">char</span> curChar = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; str : strs)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (str[start] == <span class="string">&#x27;\0&#x27;</span>) &#123; <span class="keyword">return</span> result; &#125;</span><br><span class="line">                <span class="keyword">if</span> (curChar == <span class="number">0</span>) &#123; curChar = str[start]; &#125;</span><br><span class="line">                <span class="keyword">if</span> (curChar != str[start])</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">return</span> result;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            result.<span class="built_in">append</span>(<span class="number">1</span>, curChar);</span><br><span class="line">            start++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>简单来说就是遍历这几个字符串同一位置的字符，任何字符串遇到<code>&#39;\0&#39;</code>就收手，这里用到了迭代器。</p><p><em>（没想到这道题第一次做就能跑出3ms的时间效率）</em></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;题目&quot;&gt;&lt;a href=&quot;#题目&quot; class=&quot;headerlink&quot; title=&quot;题目&quot;&gt;&lt;/a&gt;题目&lt;/h2&gt;&lt;p&gt;编写一个函数来查找字符串数组中的最长公共前缀。&lt;/p&gt;
+&lt;p&gt;如果不存在公共前缀，返回空字符串 &lt;code&gt;&amp;quot;&amp;quot;&lt;/co</summary>
+      
+    
+    
+    
+    <category term="每天1LeetCode" scheme="https://mralridge.github.io/categories/%E6%AF%8F%E5%A4%A91LeetCode/"/>
+    
+    
+    <category term="算法" scheme="https://mralridge.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>罗马数字转整数-每日1LeetCode</title>
